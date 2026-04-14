@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "CmdpalTempCleaner (Package)": {
+      "commandName": "MsixPackage",
+      "doNotLaunchApp": true
+    },
+    "CmdpalTempCleaner (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
