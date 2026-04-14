@@ -12,13 +12,13 @@ param(
     [string]$ExtensionName = "CmdpalTempCleaner",  # Change to your extension name
     [string]$Configuration = "Release",
     [string]$Version = "1.0.0",  # Change to your version
-    [string]$Platform = @("x64", "arm64")
+    [string[]]$Platforms = @("x64", "arm64")
 )
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "Building $ExtensionName EXE installer..." Write-Host "Version: $Version"
-Write-Host "Platforms: $($Platforms -join ', ')"
+Write-Host "Building $ExtensionName EXE installer..." Write-Host "Version: $Version" 
+Write-Host "Platforms: $($Platforms -join ', ')" 
 
 $ProjectDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectFile = "$ProjectDir\$ExtensionName.csproj"
