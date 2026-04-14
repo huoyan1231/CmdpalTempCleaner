@@ -2,6 +2,7 @@
 // The Microsoft Corporation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using CmdpalTempCleaner.Resources; // 在顶部添加资源类的命名空间引用
 using Microsoft.CommandPalette.Extensions;
 using Microsoft.CommandPalette.Extensions.Toolkit;
 
@@ -13,18 +14,20 @@ public partial class CmdpalTempCleanerCommandsProvider : CommandProvider
 
     public CmdpalTempCleanerCommandsProvider()
     {
-        DisplayName = "Temp Cleaner";
-        Icon = IconHelpers.FromRelativePath("Assets\\StoreLogo.png");
+        // 替换原本写死的 "Temp Cleaner"
+        DisplayName = Strings.ExtensionName;
+        Icon = IconHelpers.FromRelativePath("Assets\\icon.png");
+
         _commands = [
             new CommandItem(new ClearTempCommand())
-    {
-        Title = "清理 %temp%",
-        Subtitle = "一键清理系统临时文件夹，忽略占用文件",
-        Icon = new IconInfo("Assets\\StoreLogo.png") // 如果你有专门的图标也可以在这里换
-    }
+        { 
+            // 替换原本写死的中文标题和副标题
+            Title = Strings.CommandTitle,
+            Subtitle = Strings.CommandSubtitle,
+            Icon = new IconInfo("Assets\\icon.png")
+        }
         ];
     }
-
     public override ICommandItem[] TopLevelCommands()
     {
         return _commands;
