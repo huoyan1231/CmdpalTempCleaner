@@ -16,17 +16,18 @@ public partial class CmdpalTempCleanerCommandsProvider : CommandProvider
     {
         // 替换原本写死的 "Temp Cleaner"
         DisplayName = Strings.ExtensionName;
-        Icon = IconHelpers.FromRelativePath("Assets\\icon.png");
+        Icon = IconHelpers.FromRelativePath("Assets/icon.png");
 
-        _commands = [
+        _commands = new ICommandItem[]
+        {
             new CommandItem(new ClearTempCommand())
-        { 
-            // 替换原本写死的中文标题和副标题
-            Title = Strings.CommandTitle,
-            Subtitle = Strings.CommandSubtitle,
-            Icon = new IconInfo("Assets\\icon.png")
-        }
-        ];
+            { 
+                // 替换原本写死的中文标题和副标题
+                Title = Strings.CommandTitle,
+                Subtitle = Strings.CommandSubtitle,
+                Icon = IconHelpers.FromRelativePath("Assets/icon.png")
+            }
+        };
     }
     public override ICommandItem[] TopLevelCommands()
     {

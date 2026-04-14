@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CommandSubtitle" xml:space="preserve">
-    <value>一键清理系统临时文件夹，忽略占用文件</value>
+    <value>清理临时文件</value>
   </data>
   <data name="CommandTitle" xml:space="preserve">
-    <value>清理临时文件</value>
+    <value>Clear Temp Files</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>清理临时文件</value>
+    <value>临时文件清理</value>
   </data>
 </root>

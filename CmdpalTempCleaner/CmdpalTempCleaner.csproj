@@ -25,32 +25,13 @@
     <None Remove="Assets\.altform-unplated_targetsize-256.png" />
     <None Remove="Assets\.altform-unplated_targetsize-32.png" />
     <None Remove="Assets\.altform-unplated_targetsize-48.png" />
-    <None Remove="Assets\.scale-100.png" />
-    <None Remove="Assets\.scale-125.png" />
-    <None Remove="Assets\.scale-150.png" />
-    <None Remove="Assets\.scale-200.png" />
-    <None Remove="Assets\.scale-400.png" />
-    <None Remove="Assets\.targetsize-16.png" />
-    <None Remove="Assets\.targetsize-24.png" />
     <None Remove="Assets\.targetsize-256.png" />
-    <None Remove="Assets\.targetsize-32.png" />
-    <None Remove="Assets\.targetsize-48.png" />
     <None Remove="Assets\BadgeLogo.scale-100.png" />
     <None Remove="Assets\BadgeLogo.scale-125.png" />
     <None Remove="Assets\BadgeLogo.scale-150.png" />
     <None Remove="Assets\BadgeLogo.scale-200.png" />
     <None Remove="Assets\BadgeLogo.scale-400.png" />
-    <None Remove="Assets\clean_icon.png" />
-    <None Remove="Assets\icon.scale-100.png" />
-    <None Remove="Assets\icon.scale-125.png" />
-    <None Remove="Assets\icon.scale-150.png" />
-    <None Remove="Assets\icon.scale-200.png" />
-    <None Remove="Assets\icon.scale-400.png" />
-    <None Remove="Assets\icon.targetsize-16.png" />
-    <None Remove="Assets\icon.targetsize-24.png" />
-    <None Remove="Assets\icon.targetsize-256.png" />
-    <None Remove="Assets\icon.targetsize-32.png" />
-    <None Remove="Assets\icon.targetsize-48.png" />
+    <None Remove="Assets\icon.png" />
     <None Remove="Assets\LargeTile.scale-100.png" />
     <None Remove="Assets\LargeTile.scale-125.png" />
     <None Remove="Assets\LargeTile.scale-150.png" />
@@ -132,34 +113,7 @@
     <Content Include="Assets\.altform-unplated_targetsize-48.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\.scale-100.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.scale-125.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.scale-150.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.scale-200.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.scale-400.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.targetsize-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.targetsize-24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\.targetsize-256.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.targetsize-32.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\.targetsize-48.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\BadgeLogo.scale-100.png">
@@ -177,37 +131,7 @@
     <Content Include="Assets\BadgeLogo.scale-400.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Assets\clean_icon.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.scale-100.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.scale-125.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.scale-150.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.scale-200.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.scale-400.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.targetsize-16.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.targetsize-24.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.targetsize-256.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.targetsize-32.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\icon.targetsize-48.png">
+    <Content Include="Assets\icon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Assets\LargeTile.scale-100.png">
