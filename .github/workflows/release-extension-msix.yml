@@ -42,13 +42,13 @@ jobs:
     
     - name: Build MSIX packages (x64 and ARM64)
       run: |
-        Set-Location "${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}"
+        Set-Location "${{ env.FOLDER_NAME }}"
         .\build-msix.ps1 -Version "${{ github.event.inputs.version }}" -Platforms "x64","arm64"
       shell: pwsh
     
     - name: Create MSIX bundle
       run: |
-        Set-Location "${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}"
+        Set-Location "${{ env.FOLDER_NAME }}"
         
         $version = "${{ github.event.inputs.version }}"
         $x64Msix = Get-ChildItem "AppPackages\x64" -Recurse -Filter "*_x64*.msix" | Select-Object -First 1
