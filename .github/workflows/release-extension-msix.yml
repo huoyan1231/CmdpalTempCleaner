@@ -1,4 +1,4 @@
-name: CmdPal Extension - Build & Release
+name: CmdPal Extension - Build Msix & Release
 
 on:
   workflow_dispatch:
