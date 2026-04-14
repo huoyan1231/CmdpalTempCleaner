@@ -1,0 +1,36 @@
+; TEMPLATE: Inno Setup Script for Command Palette Extensions
+;
+; To use this template for a new extension:
+; 1. Copy this file to your extension's project folder as "setup-template.iss"
+; 2. Replace CmdpalTempCleaner with your extension name (e.g., CmdPalMyExtension)
+; 3. Replace Temp Cleaner with your extension's display name (e.g., My Extension)
+; 4. Replace DEVELOPER_NAME with your name (e.g., Your Name Here)
+; 5. Replace CLSID-HERE with extensions CLSID
+; 6. Update the default version to match your project file
+
+#define AppVersion "0.0.1.0"
+
+[Setup]
+AppId={cbed3554-f15c-432e-888c-6b5c3738f9ab}
+AppName=Temp Cleaner
+AppVersion=1.0.0
+AppPublisher=huoyan1231
+DefaultDirName={autopf}\CmdpalTempCleaner
+OutputDir=bin\Release\installer
+OutputBaseFilename=CmdpalTempCleaner-Setup-{#AppVersion}
+Compression=lzma
+SolidCompression=yes
+MinVersion=10.0.19041
+
+[Languages]
+Name: "english"; MessagesFile: "compiler:Default.isl"
+
+[Files]
+Source: "bin\Release\win-x64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
+
+[Icons]
+Name: "{group}\Temp Cleaner"; Filename: "{app}\CmdpalTempCleaner.exe"
+
+[Registry]
+Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{cbed3554-f15c-432e-888c-6b5c3738f9ab}"; ValueData: "CmdpalTempCleaner"
+Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{cbed3554-f15c-432e-888c-6b5c3738f9ab}\LocalServer32"; ValueData: "{app}\CmdpalTempCleaner.exe -RegisterProcessAsComServer"
