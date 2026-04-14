@@ -7,7 +7,7 @@
 # - YOUR_PACKAGE_IDENTITY_NAME_HERE with the AppxPackageIdentityName located in the <ExtensionName>.csproj
 
 
-name: Update WinGet - EXTENSION_NAME Extension
+name: Update WinGet - CmdpalTempCleaner Extension
 
 on:
   release:
