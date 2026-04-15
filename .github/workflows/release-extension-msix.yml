@@ -148,40 +148,40 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
-    - name: Install wingetcreate
-      run: |
-        iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
-      shell: pwsh
-    
-    - name: Update WinGet manifest
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        $version = "${{ github.event.inputs.version }}"
-        $tag = "v$version"
-        
-        $x64Msix = Get-ChildItem "${{ env.FOLDER_NAME }}/AppPackages/x64" -Recurse -Filter "*_x64*.msix" | Select-Object -First 1
-        $arm64Msix = Get-ChildItem "${{ env.FOLDER_NAME }}/AppPackages/arm64" -Recurse -Filter "*_arm64*.msix" -ErrorAction SilentlyContinue | Select-Object -First 1
-        
-        $releaseUrl = "${{ env.GITHUB_REPO_URL }}/releases/download/$tag"
-        
-        $x64Url = "$releaseUrl/$($x64Msix.Name)"
-        
-        Write-Host "Updating WinGet manifest for version $version"
-        Write-Host "x64 MSIX URL: $x64Url"
-        
-        if ($arm64Msix) {
-          $arm64Url = "$releaseUrl/$($arm64Msix.Name)"
-          Write-Host "arm64 MSIX URL: $arm64Url"
-          
-          .\wingetcreate.exe update ${{ env.PACKAGE_ID }} `
-            --version $version `
-            --urls "$x64Url|x64" "$arm64Url|arm64" `
-            --token ${{ secrets.GITHUB_TOKEN }} `
-        } else {
-          .\wingetcreate.exe update ${{ env.PACKAGE_ID }} `
-            --version $version `
-            --urls "$x64Url|x64" `
-            --token ${{ secrets.GITHUB_TOKEN }} `
-        }
-      shell: pwsh
+#    - name: Install wingetcreate
+#      run: |
+#        iwr https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+#      shell: pwsh
+#    
+#    - name: Update WinGet manifest
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      run: |
+#        $version = "${{ github.event.inputs.version }}"
+#        $tag = "v$version"
+#        
+#        $x64Msix = Get-ChildItem "${{ env.FOLDER_NAME }}/AppPackages/x64" -Recurse -Filter "*_x64*.msix" | Select-Object -First 1
+#        $arm64Msix = Get-ChildItem "${{ env.FOLDER_NAME }}/AppPackages/arm64" -Recurse -Filter "*_arm64*.msix" -ErrorAction SilentlyContinue | Select-Object -First 1
+#        
+#        $releaseUrl = "${{ env.GITHUB_REPO_URL }}/releases/download/$tag"
+#        
+#        $x64Url = "$releaseUrl/$($x64Msix.Name)"
+#        
+#        Write-Host "Updating WinGet manifest for version $version"
+#        Write-Host "x64 MSIX URL: $x64Url"
+#        
+#        if ($arm64Msix) {
+#          $arm64Url = "$releaseUrl/$($arm64Msix.Name)"
+#          Write-Host "arm64 MSIX URL: $arm64Url"
+#          
+#          .\wingetcreate.exe update ${{ env.PACKAGE_ID }} `
+#            --version $version `
+#            --urls "$x64Url|x64" "$arm64Url|arm64" `
+#            --token ${{ secrets.GITHUB_TOKEN }} `
+#        } else {
+#          .\wingetcreate.exe update ${{ env.PACKAGE_ID }} `
+#            --version $version `
+#            --urls "$x64Url|x64" `
+#            --token ${{ secrets.GITHUB_TOKEN }} `
+#        }
+#      shell: pwsh
