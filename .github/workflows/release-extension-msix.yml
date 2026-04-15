@@ -98,7 +98,15 @@ jobs:
           Write-Warning "makeappx.exe not found - skipping bundle"
         }
       shell: pwsh
-    
+
+    - name: List all files recursively
+      shell: cmd
+      run: |
+        echo "--- Current Directory ---"
+        cd
+        echo "--- Recursive Tree ---"
+        dir /s /b *.msixbundle
+
     - name: Upload MSIX artifacts
       uses: actions/upload-artifact@v4
       with:
