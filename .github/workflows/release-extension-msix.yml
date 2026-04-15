@@ -52,9 +52,8 @@ jobs:
         # 使用一个空的 SecureString 确保导入过程不被打断
         $empty_password = New-Object System.Security.SecureString
         Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\CurrentUser\My -Password $empty_password
-    - name: Build the MSIX
-      run: msbuild your_project.csproj /p:Configuration=Release /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=true /p:PackageCertificateKeyFile=$env:RUNNER_TEMP\GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
-    - name: Build MSIX packages (x64 and ARM64)
+
+        - name: Build MSIX packages (x64 and ARM64)
       run: |
         Set-Location "${{ env.FOLDER_NAME }}"
         .\build-msix.ps1 -Version "${{ github.event.inputs.version }}" -Platforms "x64","arm64"
