@@ -117,7 +117,7 @@ jobs:
         # /a: 自动选择最佳证书（因为你已经导入到存储区了）
         # /v: 显示详细日志
         & $signtool.FullName sign /fd SHA256 /a /v $bundle.FullName
-        
+
     - name: Upload MSIX artifacts
       uses: actions/upload-artifact@v4
       with:
@@ -159,8 +159,7 @@ jobs:
           
           Repository: ${{ env.GITHUB_REPO_URL }}
         files: |
-          ${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}/AppPackages/**/*.msix
-          ${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}/*.msixbundle
+          **/${{ env.EXTENSION_NAME }}_*.msixbundle
         draft: false
         prerelease: false
       env:
