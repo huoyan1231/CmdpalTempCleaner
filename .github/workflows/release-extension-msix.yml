@@ -40,6 +40,20 @@ jobs:
       with:
         dotnet-version: '9.0.x'
     
+    - name: Decode the PFX Certificate
+      shell: powershell
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
+        # 将证书写到临时文件
+        $certificatePath = Join-Path -Path $env:RUNNER_TEMP -ChildPath "GitHubActionsWorkflow.pfx"
+        [IO.File]::WriteAllBytes($certificatePath, $pfx_cert_byte)
+
+        # 导入没有密码的证书
+        # 使用一个空的 SecureString 确保导入过程不被打断
+        $empty_password = New-Object System.Security.SecureString
+        Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\CurrentUser\My -Password $empty_password
+    - name: Build the MSIX
+      run: msbuild your_project.csproj /p:Configuration=Release /p:UapAppxPackageBuildMode=SideloadOnly /p:AppxPackageSigningEnabled=true /p:PackageCertificateKeyFile=$env:RUNNER_TEMP\GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.PFX_PASSWORD }}
     - name: Build MSIX packages (x64 and ARM64)
       run: |
         Set-Location "${{ env.FOLDER_NAME }}"
