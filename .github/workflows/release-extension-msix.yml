@@ -178,12 +178,10 @@ jobs:
             --version $version `
             --urls "$x64Url|x64" "$arm64Url|arm64" `
             --token ${{ secrets.GITHUB_TOKEN }} `
-            --skip-pr
         } else {
           .\wingetcreate.exe update ${{ env.PACKAGE_ID }} `
             --version $version `
             --urls "$x64Url|x64" `
             --token ${{ secrets.GITHUB_TOKEN }} `
-            --skip-pr
         }
       shell: pwsh
