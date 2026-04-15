@@ -99,6 +99,25 @@ jobs:
         }
       shell: pwsh
 
+    - name: Sign the MSIX Bundle
+      shell: pwsh
+      run: |
+        # 1. 找到刚才生成的 bundle
+        $bundle = Get-ChildItem "**/*.msixbundle" | Select-Object -First 1
+        if (-not $bundle) { throw "msixbundle not found, skipping signature." }
+
+        # 2. 找到 signtool.exe
+        $signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+        if (-not $signtool) { throw "signtool.exe not found." }
+
+        Write-Host "Signing: $($bundle.FullName)"
+        
+        # 3. 执行签名
+        # /fd SHA256: 摘要算法
+        # /a: 自动选择最佳证书（因为你已经导入到存储区了）
+        # /v: 显示详细日志
+        & $signtool.FullName sign /fd SHA256 /a /v $bundle.FullName
+        
     - name: Upload MSIX artifacts
       uses: actions/upload-artifact@v4
       with:
