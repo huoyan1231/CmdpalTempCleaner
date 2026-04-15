@@ -99,21 +99,12 @@ jobs:
         }
       shell: pwsh
 
-    - name: List all files recursively
-      shell: cmd
-      run: |
-        echo "--- Current Directory ---"
-        cd
-        echo "--- Recursive Tree ---"
-        dir /s /b *.msixbundle
-
     - name: Upload MSIX artifacts
       uses: actions/upload-artifact@v4
       with:
         name: ${{ env.EXTENSION_NAME }}-msix
         path: |
-          ${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}/AppPackages/**/*.msix
-          ${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}/*.msixbundle
+          ${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}/${{ env.EXTENSION_NAME }}_$version.msixbundle
         if-no-files-found: warn
     
     - name: Create GitHub Release
