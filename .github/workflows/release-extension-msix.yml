@@ -104,7 +104,7 @@ jobs:
       with:
         name: ${{ env.EXTENSION_NAME }}-msix
         path: |
-          ${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}/**/${{ env.EXTENSION_NAME }}_$version.msixbundle
+          ${{ env.FOLDER_NAME }}/${{ env.EXTENSION_NAME }}/**/${{ env.EXTENSION_NAME }}_*.msixbundle
         if-no-files-found: warn
     
     - name: Create GitHub Release
