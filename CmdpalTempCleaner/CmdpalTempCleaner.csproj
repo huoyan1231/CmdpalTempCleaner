@@ -89,9 +89,10 @@
     <!-- When publishing trimmed, make sure to treat trimming warnings as build errors -->
     <ILLinkTreatWarningsAsErrors>true</ILLinkTreatWarningsAsErrors>
     <DefaultLanguage>en</DefaultLanguage>
-    <PackageCertificateThumbprint>A3CE3F05F234214B7B52C0D7D2B7209D257DCBED</PackageCertificateThumbprint>
-    <PackageCertificateKeyFile>CmdpalTempCleaner_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <!-- MSIX Signing Configuration -->
+    <AppxPackageSigningEnabled Condition="'$(AppxPackageSigningEnabled)'==''">True</AppxPackageSigningEnabled>
+    <PackageCertificateKeyFile Condition="'$(PackageCertificateKeyFile)'==''">CmdpalTempCleaner_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint Condition="'$(PackageCertificateThumbprint)'==''">A3CE3F05F234214B7B52C0D7D2B7209D257DCBED</PackageCertificateThumbprint>
 
   </PropertyGroup>
 

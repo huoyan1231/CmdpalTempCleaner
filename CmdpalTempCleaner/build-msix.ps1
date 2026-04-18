@@ -2,7 +2,9 @@ param(
     [string]$ExtensionName = "CmdpalTempCleaner",
     [string]$Configuration = "Release",
     [string]$Version = "1.0.1",
-    [string[]]$Platforms = @("x64", "arm64")
+    [string[]]$Platforms = @("x64", "arm64"),
+    [string]$CertificatePath = "",
+    [string]$CertificatePassword = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -13,6 +15,12 @@ Write-Host "Platforms: $($Platforms -join ', ')" -ForegroundColor Yellow
 
 $ProjectDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $ProjectFile = "$ProjectDir\$ExtensionName.csproj"
+
+# 找到 signtool.exe
+$signtool = Get-ChildItem "${env:ProgramFiles(x86)}\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+if (-not $signtool) {
+    $signtool = Get-ChildItem "C:\Program Files (x86)\Windows Kits\10\bin\*\x64\signtool.exe" | Sort-Object FullName -Descending | Select-Object -First 1
+}
 
 if (Test-Path "$ProjectDir\bin") { 
     Remove-Item -Path "$ProjectDir\bin" -Recurse -Force -ErrorAction SilentlyContinue 
@@ -37,14 +45,34 @@ foreach ($Platform in $Platforms) {
     
     Write-Host "Building MSIX for $platformArg..." -ForegroundColor Yellow
     
-    dotnet build $ProjectFile `
-        --configuration $Configuration `
-        -p:Platform=$platformArg `
-        -p:RuntimeIdentifier="win-$Platform" `
-        -p:GenerateAppxPackageOnBuild=true `
-        -p:AppxPackageDir="$packageDir\" `
-        -p:AppxBundle=Never `
-        -p:PublishTrimmed=false
+    $buildArgs = @(
+        "build", $ProjectFile,
+        "--configuration", $Configuration,
+        "-p:Platform=$platformArg",
+        "-p:RuntimeIdentifier=win-$Platform",
+        "-p:GenerateAppxPackageOnBuild=true",
+        "-p:AppxPackageDir=$packageDir\",
+        "-p:AppxBundle=Never",
+        "-p:PublishTrimmed=false"
+    )
+
+    if ($CertificatePath -and (Test-Path $CertificatePath)) {
+        Write-Host "Using certificate for signing: $CertificatePath" -ForegroundColor Yellow
+        $buildArgs += "-p:AppxPackageSigningEnabled=true"
+        $buildArgs += "-p:PackageCertificateKeyFile=$CertificatePath"
+        if ($CertificatePassword) {
+            $buildArgs += "-p:PackageCertificatePassword=$CertificatePassword"
+        } else {
+            # 如果没有密码，传一个空字符串或者不传，取决于具体工具链的需求
+            # 某些情况下 msbuild 需要一个空密码参数
+            $buildArgs += "-p:PackageCertificatePassword="
+        }
+    } else {
+        Write-Host "No certificate provided, building unsigned package..." -ForegroundColor Gray
+        $buildArgs += "-p:AppxPackageSigningEnabled=false"
+    }
+
+    dotnet @buildArgs
 
     if ($LASTEXITCODE -ne 0) { 
         Write-Warning "Build failed for $Platform with exit code: $LASTEXITCODE"
@@ -56,17 +84,22 @@ foreach ($Platform in $Platforms) {
         foreach ($msix in $msixFiles) {
             $sizeMB = [math]::Round($msix.Length / 1MB, 2)
             Write-Host "Created MSIX: $($msix.Name) ($sizeMB MB)" -ForegroundColor Green
+
+            # 如果 dotnet build 没签上名，手动用 signtool 签一下
+            if ($CertificatePath -and (Test-Path $CertificatePath) -and $signtool) {
+                Write-Host "Manually signing MSIX with signtool..." -ForegroundColor Yellow
+                $signArgs = @("sign", "/fd", "SHA256", "/f", $CertificatePath)
+                if ($CertificatePassword) {
+                    $signArgs += "/p"
+                    $signArgs += $CertificatePassword
+                }
+                # 如果没有密码，signtool 默认不需要 /p
+                $signArgs += $msix.FullName
+                & $signtool.FullName @signArgs
+            }
         }
     } else {
         Write-Warning "No MSIX files found in $packageDir"
-        $binMsix = Get-ChildItem -Path "$ProjectDir\bin" -Recurse -Filter "*.msix" -ErrorAction SilentlyContinue
-        if ($binMsix) {
-            Write-Host "Found MSIX in bin directory:" -ForegroundColor Yellow
-            foreach ($msix in $binMsix) {
-                $sizeMB = [math]::Round($msix.Length / 1MB, 2)
-                Write-Host "  $($msix.Name) ($sizeMB MB)" -ForegroundColor Green
-            }
-        }
     }
 }
 

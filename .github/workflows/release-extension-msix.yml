@@ -40,22 +40,49 @@ jobs:
       with:
         dotnet-version: '9.0.x'
     
-    - name: Decode the PFX Certificate
+    - name: Decode the PFX Certificate and Extract Subject
       shell: powershell
       run: |
         $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.BASE64_ENCODED_PFX }}")
-        # 将证书写到临时文件
         $certificatePath = Join-Path -Path $env:RUNNER_TEMP -ChildPath "GitHubActionsWorkflow.pfx"
         [IO.File]::WriteAllBytes($certificatePath, $pfx_cert_byte)
+        echo "CERT_PATH=$certificatePath" >> $env:GITHUB_ENV
+        
+        # 提取证书主题 (Subject)
+        # 既然没有密码，我们直接加载证书。注意：MSIX 要求的 Publisher 必须与证书的 Subject 严格匹配。
+        try {
+            $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath, "")
+            $subject = $cert.Subject
+            echo "CERT_SUBJECT=$subject" >> $env:GITHUB_ENV
+            Write-Host "Extracted Subject: $subject"
+        } catch {
+            Write-Error "Failed to load certificate. If it has a password, please provide it."
+            exit 1
+        }
 
-        # 导入没有密码的证书
-        # 使用一个空的 SecureString 确保导入过程不被打断
-        $empty_password = New-Object System.Security.SecureString
-        Import-PfxCertificate -FilePath $certificatePath -CertStoreLocation Cert:\CurrentUser\My -Password $empty_password
+    - name: Update Package.appxmanifest Publisher
+      shell: pwsh
+      run: |
+        $manifestPath = "${{ env.FOLDER_NAME }}/Package.appxmanifest"
+        $subject = "${{ env.CERT_SUBJECT }}"
+        
+        if (-not $subject) {
+            Write-Error "Certificate Subject is empty. Cannot update manifest."
+            exit 1
+        }
+        
+        Write-Host "Updating Publisher in $manifestPath to $subject"
+        [xml]$xml = Get-Content $manifestPath
+        $xml.Package.Identity.Publisher = $subject
+        $xml.Save($manifestPath)
+
     - name: Build MSIX packages (x64 and ARM64)
       run: |
         Set-Location "${{ env.FOLDER_NAME }}"
-        .\build-msix.ps1 -Version "${{ github.event.inputs.version }}" -Platforms "x64","arm64"
+        $certPath = "${{ env.CERT_PATH }}"
+        
+        # 调用更新后的 build-msix.ps1，不传递密码
+        .\build-msix.ps1 -Version "${{ github.event.inputs.version }}" -Platforms "x64","arm64" -CertificatePath "$certPath"
       shell: pwsh
     
     - name: Create MSIX bundle
@@ -112,11 +139,15 @@ jobs:
 
         Write-Host "Signing: $($bundle.FullName)"
         
+        $certPath = "${{ env.CERT_PATH }}"
+        
         # 3. 执行签名
-        # /fd SHA256: 摘要算法
-        # /a: 自动选择最佳证书（因为你已经导入到存储区了）
-        # /v: 显示详细日志
-        & $signtool.FullName sign /fd SHA256 /a /v $bundle.FullName
+        $signArgs = @("sign", "/fd", "SHA256", "/f", $certPath)
+        # 如果没有密码，signtool 不需要 /p 参数
+        $signArgs += "/v"
+        $signArgs += $bundle.FullName
+        
+        & $signtool.FullName @signArgs
 
     - name: Upload MSIX artifacts
       uses: actions/upload-artifact@v4
