@@ -25,14 +25,14 @@ ArchitecturesInstallIn64BitMode=arm64
 MinVersion=10.0.19041
 
 [Languages]
-Name: "english"; MessagesFile: "compiler:Default.isl"
+Name: "english"; MessagesFile: "compiler:Default.isl" 
 
 [Files]
 Source: "bin\Release\win-arm64\publish\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs
 
 [Icons]
-Name: "{group}\DISPLAY_NAME"; Filename: "{app}\EXTENSION_NAME.exe"
+Name: "{group}\CmdpalTempCleaner"; Filename: "{app}\CmdpalTempCleaner.exe"
 
 [Registry]
-Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{{CLSID-HERE}}"; ValueData: "EXTENSION_NAME"
-Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{{CLSID-HERE}}\LocalServer32"; ValueData: "{app}\EXTENSION_NAME.exe -RegisterProcessAsComServer"
+Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{{cbed3554-f15c-432e-888c-6b5c3738f9ab}}"; ValueData: "CmdpalTempCleaner"
+Root: HKCU; Subkey: "SOFTWARE\Classes\CLSID\{{cbed3554-f15c-432e-888c-6b5c3738f9ab}}\LocalServer32"; ValueData: "{app}\CmdpalTempCleaner.exe -RegisterProcessAsComServer"
