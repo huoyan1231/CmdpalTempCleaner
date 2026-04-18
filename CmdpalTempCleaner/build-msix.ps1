@@ -62,6 +62,10 @@ foreach ($Platform in $Platforms) {
         $buildArgs += "-p:PackageCertificateKeyFile=$CertificatePath"
         if ($CertificatePassword) {
             $buildArgs += "-p:PackageCertificatePassword=$CertificatePassword"
+        } else {
+            # 如果没有密码，传一个空字符串或者不传，取决于具体工具链的需求
+            # 某些情况下 msbuild 需要一个空密码参数
+            $buildArgs += "-p:PackageCertificatePassword="
         }
     } else {
         Write-Host "No certificate provided, building unsigned package..." -ForegroundColor Gray
@@ -89,6 +93,7 @@ foreach ($Platform in $Platforms) {
                     $signArgs += "/p"
                     $signArgs += $CertificatePassword
                 }
+                # 如果没有密码，signtool 默认不需要 /p
                 $signArgs += $msix.FullName
                 & $signtool.FullName @signArgs
             }

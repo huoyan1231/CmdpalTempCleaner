@@ -48,19 +48,28 @@ jobs:
         [IO.File]::WriteAllBytes($certificatePath, $pfx_cert_byte)
         echo "CERT_PATH=$certificatePath" >> $env:GITHUB_ENV
         
-        # 提取证书主题 (Subject)，用于更新清单文件中的 Publisher
-        $certPassword = "${{ secrets.PFX_PASSWORD }}"
-        $securePassword = ConvertTo-SecureString $certPassword -AsPlainText -Force
-        $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath, $securePassword)
-        $subject = $cert.Subject
-        echo "CERT_SUBJECT=$subject" >> $env:GITHUB_ENV
-        Write-Host "Extracted Subject: $subject"
+        # 提取证书主题 (Subject)
+        # 既然没有密码，我们直接加载证书。注意：MSIX 要求的 Publisher 必须与证书的 Subject 严格匹配。
+        try {
+            $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($certificatePath, "")
+            $subject = $cert.Subject
+            echo "CERT_SUBJECT=$subject" >> $env:GITHUB_ENV
+            Write-Host "Extracted Subject: $subject"
+        } catch {
+            Write-Error "Failed to load certificate. If it has a password, please provide it."
+            exit 1
+        }
 
     - name: Update Package.appxmanifest Publisher
       shell: pwsh
       run: |
         $manifestPath = "${{ env.FOLDER_NAME }}/Package.appxmanifest"
         $subject = "${{ env.CERT_SUBJECT }}"
+        
+        if (-not $subject) {
+            Write-Error "Certificate Subject is empty. Cannot update manifest."
+            exit 1
+        }
         
         Write-Host "Updating Publisher in $manifestPath to $subject"
         [xml]$xml = Get-Content $manifestPath
@@ -71,10 +80,9 @@ jobs:
       run: |
         Set-Location "${{ env.FOLDER_NAME }}"
         $certPath = "${{ env.CERT_PATH }}"
-        $certPassword = "${{ secrets.PFX_PASSWORD }}"
         
-        # 调用更新后的 build-msix.ps1，传入证书信息
-        .\build-msix.ps1 -Version "${{ github.event.inputs.version }}" -Platforms "x64","arm64" -CertificatePath "$certPath" -CertificatePassword "$certPassword"
+        # 调用更新后的 build-msix.ps1，不传递密码
+        .\build-msix.ps1 -Version "${{ github.event.inputs.version }}" -Platforms "x64","arm64" -CertificatePath "$certPath"
       shell: pwsh
     
     - name: Create MSIX bundle
@@ -132,14 +140,10 @@ jobs:
         Write-Host "Signing: $($bundle.FullName)"
         
         $certPath = "${{ env.CERT_PATH }}"
-        $certPassword = "${{ secrets.PFX_PASSWORD }}"
         
         # 3. 执行签名
         $signArgs = @("sign", "/fd", "SHA256", "/f", $certPath)
-        if ($certPassword) {
-            $signArgs += "/p"
-            $signArgs += $certPassword
-        }
+        # 如果没有密码，signtool 不需要 /p 参数
         $signArgs += "/v"
         $signArgs += $bundle.FullName
         
